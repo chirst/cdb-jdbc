@@ -14,10 +14,10 @@ public class CdbTest {
         DriverManager.registerDriver(d);
         var connection = DriverManager.getConnection("jdbc:cdb:memory:");
         var sql = """
-            CREATE TALBE IF NOT EXISTS foo (
-                ID INTEGER PRIMARY KEY,
-                name TEXT
-            );
+        CREATE TABLE IF NOT EXISTS foo (
+            ID INTEGER PRIMARY KEY,
+            name TEXT
+        );
         """;
         // var s = connection.prepareStatement(sql);
         // s.execute();
