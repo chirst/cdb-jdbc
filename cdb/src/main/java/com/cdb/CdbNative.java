@@ -7,7 +7,7 @@ import java.nio.file.Path;
 public class CdbNative {
 
     private static Path GetCdbLib() {
-        return Path.of("/workspaces/cdb-jdbc/cdb/src/main/resources/com/cdb/libcdb.so");
+        return Path.of("/workspaces/cdb-jdbc/cdb/src/main/resources/com/cdb/cdb.so");
     }
 
     public static void newDb(String filename) throws Throwable {
@@ -40,7 +40,11 @@ public class CdbNative {
         var a = Arena.global();
         var lib = SymbolLookup.libraryLookup(GetCdbLib(), a);
         var f = lib.find("cdb_prepare").orElseThrow();
-        var fd = FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.ADDRESS, ValueLayout.ADDRESS, ValueLayout.ADDRESS);
+        var fd = FunctionDescriptor.of(
+                ValueLayout.JAVA_INT,
+                ValueLayout.ADDRESS,
+                ValueLayout.ADDRESS,
+                ValueLayout.ADDRESS);
         var fh = linker.downcallHandle(f, fd);
         MemorySegment nativeFilename = a.allocateUtf8String(filename);
         MemorySegment nativeSql = a.allocateUtf8String(sql);
@@ -67,7 +71,10 @@ public class CdbNative {
         var a = Arena.global();
         var lib = SymbolLookup.libraryLookup(GetCdbLib(), a);
         var f = lib.find("cdb_bind_int").orElseThrow();
-        var fd = FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.JAVA_INT, ValueLayout.JAVA_INT);
+        var fd = FunctionDescriptor.of(
+                ValueLayout.JAVA_INT,
+                ValueLayout.JAVA_INT,
+                ValueLayout.JAVA_INT);
         var fh = linker.downcallHandle(f, fd);
         var result = (int) fh.invokeExact(prepareId, bound);
         if (result != 0) {
@@ -80,7 +87,10 @@ public class CdbNative {
         var a = Arena.global();
         var lib = SymbolLookup.libraryLookup(GetCdbLib(), a);
         var f = lib.find("cdb_bind_string").orElseThrow();
-        var fd = FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.JAVA_INT, ValueLayout.ADDRESS);
+        var fd = FunctionDescriptor.of(
+                ValueLayout.JAVA_INT,
+                ValueLayout.JAVA_INT,
+                ValueLayout.ADDRESS);
         var fh = linker.downcallHandle(f, fd);
         MemorySegment nativeBound = a.allocateUtf8String(bound);
         var result = (int) fh.invokeExact(prepareId, nativeBound);
@@ -107,11 +117,15 @@ public class CdbNative {
         var a = Arena.global();
         var lib = SymbolLookup.libraryLookup(GetCdbLib(), a);
         var f = lib.find("cdb_result_err").orElseThrow();
-        var fd = FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.JAVA_INT, ValueLayout.ADDRESS, ValueLayout.ADDRESS);
+        var fd = FunctionDescriptor.of(
+                ValueLayout.JAVA_INT,
+                ValueLayout.JAVA_INT,
+                ValueLayout.ADDRESS,
+                ValueLayout.ADDRESS);
         var fh = linker.downcallHandle(f, fd);
         var hasError = a.allocate(ValueLayout.JAVA_INT, 1);
-        var charStarStar = a.allocate(ValueLayout.ADDRESS);
-        var result = (int) fh.invokeExact(prepareId, hasError, charStarStar);
+        var errMessage = a.allocate(ValueLayout.ADDRESS);
+        var result = (int) fh.invokeExact(prepareId, hasError, errMessage);
         if (result != 0) {
             throw new Exception("non zero status from cdb");
         }
@@ -119,8 +133,10 @@ public class CdbNative {
         if (v == 0) {
             return "";
         }
-        var charStar = charStarStar.get(ValueLayout.ADDRESS, 0);
-        return charStar.getUtf8String(0);
+        return errMessage
+                .get(ValueLayout.ADDRESS, 0)
+                .reinterpret(Long.MAX_VALUE)
+                .getUtf8String(0);
     }
 
     public static boolean resultRow(int prepareId) throws Throwable {
@@ -128,7 +144,10 @@ public class CdbNative {
         var a = Arena.global();
         var lib = SymbolLookup.libraryLookup(GetCdbLib(), a);
         var f = lib.find("cdb_result_row").orElseThrow();
-        var fd = FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.JAVA_INT, ValueLayout.ADDRESS);
+        var fd = FunctionDescriptor.of(
+                ValueLayout.JAVA_INT,
+                ValueLayout.JAVA_INT,
+                ValueLayout.ADDRESS);
         var fh = linker.downcallHandle(f, fd);
         var hasRow = a.allocate(ValueLayout.JAVA_INT, 0);
         var result = (int) fh.invokeExact(prepareId, hasRow);
@@ -144,7 +163,11 @@ public class CdbNative {
         var a = Arena.global();
         var lib = SymbolLookup.libraryLookup(GetCdbLib(), a);
         var f = lib.find("cdb_result_col_int").orElseThrow();
-        var fd = FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.JAVA_INT, ValueLayout.JAVA_INT, ValueLayout.ADDRESS);
+        var fd = FunctionDescriptor.of(
+                ValueLayout.JAVA_INT,
+                ValueLayout.JAVA_INT,
+                ValueLayout.JAVA_INT,
+                ValueLayout.ADDRESS);
         var fh = linker.downcallHandle(f, fd);
         var resultCol = a.allocate(ValueLayout.JAVA_INT, 0);
         var result = (int) fh.invokeExact(prepareId, colIdx, resultCol);
@@ -158,14 +181,21 @@ public class CdbNative {
         var linker = Linker.nativeLinker();
         var a = Arena.global();
         var lib = SymbolLookup.libraryLookup(GetCdbLib(), a);
-        var f = lib.find("cdb_result_col_int").orElseThrow();
-        var fd = FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.JAVA_INT, ValueLayout.JAVA_INT, ValueLayout.ADDRESS);
+        var f = lib.find("cdb_result_col_string").orElseThrow();
+        var fd = FunctionDescriptor.of(
+                ValueLayout.JAVA_INT,
+                ValueLayout.JAVA_INT,
+                ValueLayout.JAVA_INT,
+                ValueLayout.ADDRESS);
         var fh = linker.downcallHandle(f, fd);
-        var charStarStar = a.allocate(ValueLayout.ADDRESS);
-        var result = (int) fh.invokeExact(prepareId, colIdx, charStarStar);
-        if (result != 0) {
+        var resultPtr = a.allocate(ValueLayout.ADDRESS);
+        var errCode = (int) fh.invokeExact(prepareId, colIdx, resultPtr);
+        if (errCode != 0) {
             throw new Exception("non zero status from cdb");
         }
-        return charStarStar.getAtIndex(ValueLayout.ADDRESS, 0).getUtf8String(0);
+        return resultPtr
+                .get(ValueLayout.ADDRESS, 0)
+                .reinterpret(Long.MAX_VALUE)
+                .getUtf8String(0);
     }
 }

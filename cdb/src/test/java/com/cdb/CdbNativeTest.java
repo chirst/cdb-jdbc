@@ -26,15 +26,15 @@ public class CdbNativeTest {
             CdbNative.closeStatement(createPrepareId);
 
             var insertSql = """
-            INSERT INTO foo (id, name) VALUES (12, 'bar');
+            INSERT INTO foo (id, name) VALUES (?, ?);
             """;
             var insertPrepareId = CdbNative.prepare(":memory:", insertSql);
             assertNotEquals(insertPrepareId, 0);
             CdbNative.bindInt(insertPrepareId, 12);
-            // CdbNative.bindString(insertPrepareId, "bar");
+            CdbNative.bindString(insertPrepareId, "bar");
             CdbNative.execute(insertPrepareId);
-            // err = CdbNative.resultErr(insertPrepareId);
-            // assertEquals(err, "");
+            err = CdbNative.resultErr(insertPrepareId);
+            assertEquals(err, "");
             CdbNative.closeStatement(insertPrepareId);
 
             var selectSql = """
@@ -46,9 +46,9 @@ public class CdbNativeTest {
             var hasRow = CdbNative.resultRow(selectPrepareId);
             assertTrue(hasRow);
             var rowId = CdbNative.resultColInt(selectPrepareId, 0);
-            // var name = CdbNative.resultColString(selectPrepareId, 1);
+            var name = CdbNative.resultColString(selectPrepareId, 1);
             assertEquals(rowId, 12);
-            // assertEquals(name, "bar");
+            assertEquals(name, "bar");
             hasRow = CdbNative.resultRow(selectPrepareId);
             assertFalse(hasRow);
             CdbNative.closeStatement(selectPrepareId);
