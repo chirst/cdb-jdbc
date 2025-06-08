@@ -29,6 +29,16 @@ public class CdbConnection implements Connection {
     }
 
     @Override
+    public PreparedStatement prepareStatement(String sql) throws SQLException {
+        try {
+            int prepareId = CdbNative.prepare(_filename, sql);
+            return new CdbPreparedStatement(prepareId);
+        } catch (Throwable e) {
+            throw new SQLException("failed to prepare", e);
+        }
+    }
+
+    @Override
     public <T> T unwrap(Class<T> iface) throws SQLException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'unwrap'");
@@ -44,12 +54,6 @@ public class CdbConnection implements Connection {
     public Statement createStatement() throws SQLException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'createStatement'");
-    }
-
-    @Override
-    public PreparedStatement prepareStatement(String sql) throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'prepareStatement'");
     }
 
     @Override

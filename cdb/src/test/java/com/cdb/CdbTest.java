@@ -9,19 +9,38 @@ import org.junit.jupiter.api.Test;
 
 public class CdbTest {
     @Test
-    public void Foo() throws SQLException, ClassNotFoundException {
+    public void TestCreate() throws SQLException, ClassNotFoundException {
         var d = new Cdb();
         DriverManager.registerDriver(d);
-        var connection = DriverManager.getConnection("jdbc:cdb:memory:");
-        var sql = """
-        CREATE TABLE IF NOT EXISTS foo (
-            ID INTEGER PRIMARY KEY,
-            name TEXT
+        var connection = DriverManager.getConnection("jdbc:cdb::memory:");
+
+        var createStatement = connection.prepareStatement(
+            """
+            CREATE TABLE IF NOT EXISTS foo (
+                ID INTEGER PRIMARY KEY,
+                name TEXT
+            );
+            """
         );
-        """;
-        // var s = connection.prepareStatement(sql);
-        // s.execute();
+        createStatement.execute();
+        createStatement.close();
+
+        var insertStatement = connection.prepareStatement(
+            "INSERT INTO foo (id, name) VALUES (12, 'asdf');"
+        );
+        insertStatement.execute();
+        insertStatement.close();
+
+        var selectStatement = connection.prepareStatement("SELECT * FROM foo;");
+        var rs = selectStatement.executeQuery();
+        rs.next();
+        var id = rs.getInt(0);
+        var name = rs.getString(1);
+        selectStatement.close();
+
         connection.close();
-        assertEquals(2, 2);
+
+        assertEquals(id, 12);
+        assertEquals(name, "asdf");
     }
 }
