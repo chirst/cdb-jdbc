@@ -42,6 +42,11 @@ public class CdbPreparedStatement implements PreparedStatement {
 
     @Override
     public ResultSet executeQuery() throws SQLException {
+        try {
+            CdbNative.execute(_prepareId);
+        } catch (Throwable e) {
+            throw new SQLException("failed to execute", e);
+        }
         return new CdbResultSet(_prepareId);
     }
 

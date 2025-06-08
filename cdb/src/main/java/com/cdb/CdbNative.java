@@ -171,7 +171,7 @@ public class CdbNative {
                 ValueLayout.JAVA_INT,
                 ValueLayout.ADDRESS);
         var fh = linker.downcallHandle(f, fd);
-        var resultCol = a.allocate(ValueLayout.JAVA_INT, 0);
+        var resultCol = a.allocate(ValueLayout.ADDRESS);
         var result = (int) fh.invokeExact(prepareId, colIdx, resultCol);
         throwForCode(result, nativeName);
         return resultCol.get(ValueLayout.JAVA_INT, 0);

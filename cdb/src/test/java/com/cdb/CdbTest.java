@@ -15,12 +15,7 @@ public class CdbTest {
         var connection = DriverManager.getConnection("jdbc:cdb::memory:");
 
         var createStatement = connection.prepareStatement(
-            """
-            CREATE TABLE IF NOT EXISTS foo (
-                ID INTEGER PRIMARY KEY,
-                name TEXT
-            );
-            """
+            "CREATE TABLE foo (id INTEGER PRIMARY KEY, name TEXT)"
         );
         createStatement.execute();
         createStatement.close();

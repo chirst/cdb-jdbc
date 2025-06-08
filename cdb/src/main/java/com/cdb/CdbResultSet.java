@@ -32,6 +32,12 @@ public class CdbResultSet implements ResultSet {
     @Override
     public boolean next() throws SQLException {
         try {
+            var e = CdbNative.resultErr(_prepareId);
+            if (e != "") throw new SQLException("got err " + e);
+        } catch (Throwable e) {
+            throw new SQLException("error getting result err", e);
+        }
+        try {
             return CdbNative.resultRow(_prepareId);
         } catch (Throwable e) {
             throw new SQLException("error getting result row", e);
