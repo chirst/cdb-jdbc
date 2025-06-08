@@ -32,31 +32,19 @@ public class CdbPreparedStatement implements PreparedStatement {
 
     @Override
     public boolean execute() throws SQLException {
-        try {
-            CdbNative.execute(_prepareId);
-        } catch (Throwable e) {
-            throw new SQLException("failed to execute", e);
-        }
+        CdbNative.execute(_prepareId);
         return false;
     }
 
     @Override
     public ResultSet executeQuery() throws SQLException {
-        try {
-            CdbNative.execute(_prepareId);
-        } catch (Throwable e) {
-            throw new SQLException("failed to execute", e);
-        }
+        CdbNative.execute(_prepareId);
         return new CdbResultSet(_prepareId);
     }
 
     @Override
     public void close() throws SQLException {
-        try {
-            CdbNative.closeStatement(_prepareId);
-        } catch (Throwable e) {
-            throw new SQLException("failed to close statement", e);
-        }
+        CdbNative.closeStatement(_prepareId);
     }
 
     @Override

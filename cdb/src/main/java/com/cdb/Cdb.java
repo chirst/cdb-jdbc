@@ -13,11 +13,7 @@ public class Cdb implements Driver {
     @Override
     public Connection connect(String url, Properties info) throws SQLException {
         var filename = url.replaceFirst("jdbc:cdb:", "");
-        try {
-            CdbNative.newDb(filename);
-        } catch (Throwable e) {
-            throw new SQLException("failed to open database", e);
-        }
+        CdbNative.newDb(filename);
         return new CdbConnection(filename);
     }
 

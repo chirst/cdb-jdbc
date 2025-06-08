@@ -30,12 +30,19 @@ public class CdbConnection implements Connection {
 
     @Override
     public PreparedStatement prepareStatement(String sql) throws SQLException {
-        try {
-            int prepareId = CdbNative.prepare(_filename, sql);
-            return new CdbPreparedStatement(prepareId);
-        } catch (Throwable e) {
-            throw new SQLException("failed to prepare", e);
-        }
+        int prepareId = CdbNative.prepare(_filename, sql);
+        return new CdbPreparedStatement(prepareId);
+    }
+
+    @Override
+    public void close() throws SQLException {
+        CdbNative.closeDb(_filename);
+        _isOpen = false;
+    }
+
+    @Override
+    public boolean isClosed() throws SQLException {
+        return !_isOpen;
     }
 
     @Override
@@ -90,21 +97,6 @@ public class CdbConnection implements Connection {
     public void rollback() throws SQLException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'rollback'");
-    }
-
-    @Override
-    public void close() throws SQLException {
-        try {
-            CdbNative.closeDb(_filename);
-        } catch (Throwable e) {
-            throw new SQLException("failed to close db", e);
-        }
-        _isOpen = false;
-    }
-
-    @Override
-    public boolean isClosed() throws SQLException {
-        return !_isOpen;
     }
 
     @Override

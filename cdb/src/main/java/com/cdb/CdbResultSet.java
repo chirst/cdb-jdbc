@@ -31,35 +31,19 @@ public class CdbResultSet implements ResultSet {
 
     @Override
     public boolean next() throws SQLException {
-        try {
-            var e = CdbNative.resultErr(_prepareId);
-            if (e != "") throw new SQLException("got err " + e);
-        } catch (Throwable e) {
-            throw new SQLException("error getting result err", e);
-        }
-        try {
-            return CdbNative.resultRow(_prepareId);
-        } catch (Throwable e) {
-            throw new SQLException("error getting result row", e);
-        }
+        var e = CdbNative.resultErr(_prepareId);
+        if (e != "") throw new SQLException("got err " + e);
+        return CdbNative.resultRow(_prepareId);
     }
 
     @Override
     public int getInt(int columnIndex) throws SQLException {
-        try {
-            return CdbNative.resultColInt(_prepareId, columnIndex);
-        } catch (Throwable e) {
-            throw new SQLException("error getting result column int", e);
-        }
+        return CdbNative.resultColInt(_prepareId, columnIndex);
     }
 
     @Override
     public String getString(int columnIndex) throws SQLException {
-        try {
-            return CdbNative.resultColString(_prepareId, columnIndex);
-        } catch (Throwable e) {
-            throw new SQLException("error getting result column string", e);
-        }
+        return CdbNative.resultColString(_prepareId, columnIndex);
     }
 
     @Override

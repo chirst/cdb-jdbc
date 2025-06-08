@@ -2,6 +2,7 @@ package com.cdb;
 
 import java.lang.foreign.*;
 import java.nio.file.Path;
+import java.sql.SQLException;
 
 @SuppressWarnings("preview")
 public class CdbNative {
@@ -10,13 +11,13 @@ public class CdbNative {
         return Path.of("/workspaces/cdb-jdbc/cdb/src/main/resources/com/cdb/cdb.so");
     }
 
-    private static void throwForCode(int code, String nativeName) throws Throwable {
+    private static void throwForCode(int code, String nativeName) throws SQLException {
         if (code != 0) {
-            throw new Exception("non zero status from " + nativeName);
+            throw new SQLException("non zero status from " + nativeName);
         }
     }
 
-    public static void newDb(String filename) throws Throwable {
+    public static void newDb(String filename) throws SQLException {
         final String nativeName = "cdb_new_db";
         var linker = Linker.nativeLinker();
         var a = Arena.global();
@@ -25,11 +26,16 @@ public class CdbNative {
         var fd = FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.ADDRESS);
         var fh = linker.downcallHandle(f, fd);
         MemorySegment nativeString = a.allocateUtf8String(filename);
-        var result = (int) fh.invokeExact(nativeString);
+        int result;
+        try {
+            result = (int) fh.invokeExact(nativeString);
+        } catch (Throwable e) {
+            throw new SQLException("failed to invoke " + nativeName, e);
+        }
         throwForCode(result, nativeName);
     }
 
-    public static void closeDb(String filename) throws Throwable {
+    public static void closeDb(String filename) throws SQLException {
         final String nativeName = "cdb_close_db";
         var linker = Linker.nativeLinker();
         var a = Arena.global();
@@ -38,10 +44,14 @@ public class CdbNative {
         var fd = FunctionDescriptor.ofVoid(ValueLayout.ADDRESS);
         var fh = linker.downcallHandle(f, fd);
         MemorySegment nativeString = a.allocateUtf8String(filename);
-        fh.invokeExact(nativeString);
+        try {
+            fh.invokeExact(nativeString);
+        } catch (Throwable e) {
+            throw new SQLException("failed to invoke " + nativeName, e);
+        }
     }
 
-    public static int prepare(String filename, String sql) throws Throwable {
+    public static int prepare(String filename, String sql) throws SQLException {
         final String nativeName = "cdb_prepare";
         var linker = Linker.nativeLinker();
         var a = Arena.global();
@@ -56,12 +66,17 @@ public class CdbNative {
         MemorySegment nativeFilename = a.allocateUtf8String(filename);
         MemorySegment nativeSql = a.allocateUtf8String(sql);
         var prepareId = a.allocate(ValueLayout.JAVA_INT, 0);
-        var result = (int) fh.invokeExact(prepareId, nativeFilename, nativeSql);
+        int result;
+        try {
+            result = (int) fh.invokeExact(prepareId, nativeFilename, nativeSql);
+        } catch (Throwable e) {
+            throw new SQLException("failed to invoke " + nativeName, e);
+        }
         throwForCode(result, nativeName);
         return prepareId.get(ValueLayout.JAVA_INT, 0);
     }
 
-    public static void closeStatement(int prepareId) throws Throwable {
+    public static void closeStatement(int prepareId) throws SQLException {
         final String nativeName = "cdb_close_statement";
         var linker = Linker.nativeLinker();
         var a = Arena.global();
@@ -69,10 +84,14 @@ public class CdbNative {
         var f = lib.find(nativeName).orElseThrow();
         var fd = FunctionDescriptor.ofVoid(ValueLayout.JAVA_INT);
         var fh = linker.downcallHandle(f, fd);
-        fh.invokeExact(prepareId);
+        try {
+            fh.invokeExact(prepareId);
+        } catch (Throwable e) {
+            throw new SQLException("failed to invoke " + nativeName, e);
+        }
     }
 
-    public static void bindInt(int prepareId, int bound) throws Throwable {
+    public static void bindInt(int prepareId, int bound) throws SQLException {
         final String nativeName = "cdb_bind_int";
         var linker = Linker.nativeLinker();
         var a = Arena.global();
@@ -83,11 +102,16 @@ public class CdbNative {
                 ValueLayout.JAVA_INT,
                 ValueLayout.JAVA_INT);
         var fh = linker.downcallHandle(f, fd);
-        var result = (int) fh.invokeExact(prepareId, bound);
+        int result;
+        try {
+            result = (int) fh.invokeExact(prepareId, bound);
+        } catch (Throwable e) {
+            throw new SQLException("failed to invoke " + nativeName, e);
+        }
         throwForCode(result, nativeName);
     }
 
-    public static void bindString(int prepareId, String bound) throws Throwable {
+    public static void bindString(int prepareId, String bound) throws SQLException {
         final String nativeName = "cdb_bind_string";
         var linker = Linker.nativeLinker();
         var a = Arena.global();
@@ -99,11 +123,16 @@ public class CdbNative {
                 ValueLayout.ADDRESS);
         var fh = linker.downcallHandle(f, fd);
         MemorySegment nativeBound = a.allocateUtf8String(bound);
-        var result = (int) fh.invokeExact(prepareId, nativeBound);
+        int result;
+        try {
+            result = (int) fh.invokeExact(prepareId, nativeBound);
+        } catch (Throwable e) {
+            throw new SQLException("failed to invoke " + nativeName, e);
+        }
         throwForCode(result, nativeName);
     }
 
-    public static void execute(int prepareId) throws Throwable {
+    public static void execute(int prepareId) throws SQLException {
         final String nativeName = "cdb_execute";
         var linker = Linker.nativeLinker();
         var a = Arena.global();
@@ -111,11 +140,16 @@ public class CdbNative {
         var f = lib.find(nativeName).orElseThrow();
         var fd = FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.JAVA_INT);
         var fh = linker.downcallHandle(f, fd);
-        var result = (int) fh.invokeExact(prepareId);
+        int result;
+        try {
+            result = (int) fh.invokeExact(prepareId);
+        } catch (Throwable e) {
+            throw new SQLException("failed to invoke " + nativeName, e);
+        }
         throwForCode(result, nativeName);
     }
 
-    public static String resultErr(int prepareId) throws Throwable {
+    public static String resultErr(int prepareId) throws SQLException {
         final String nativeName = "cdb_result_err";
         var linker = Linker.nativeLinker();
         var a = Arena.global();
@@ -129,7 +163,12 @@ public class CdbNative {
         var fh = linker.downcallHandle(f, fd);
         var hasError = a.allocate(ValueLayout.JAVA_INT, 1);
         var errMessage = a.allocate(ValueLayout.ADDRESS);
-        var result = (int) fh.invokeExact(prepareId, hasError, errMessage);
+        int result;
+        try {
+            result = (int) fh.invokeExact(prepareId, hasError, errMessage);
+        } catch (Throwable e) {
+            throw new SQLException("failed to invoke " + nativeName, e);
+        }
         throwForCode(result, nativeName);
         var v = hasError.get(ValueLayout.JAVA_INT, 0);
         if (v == 0) {
@@ -141,7 +180,7 @@ public class CdbNative {
                 .getUtf8String(0);
     }
 
-    public static boolean resultRow(int prepareId) throws Throwable {
+    public static boolean resultRow(int prepareId) throws SQLException {
         final String nativeName = "cdb_result_row";
         var linker = Linker.nativeLinker();
         var a = Arena.global();
@@ -153,13 +192,18 @@ public class CdbNative {
                 ValueLayout.ADDRESS);
         var fh = linker.downcallHandle(f, fd);
         var hasRow = a.allocate(ValueLayout.JAVA_INT, 0);
-        var result = (int) fh.invokeExact(prepareId, hasRow);
+        int result;
+        try {
+            result = (int) fh.invokeExact(prepareId, hasRow);
+        } catch (Throwable e) {
+            throw new SQLException("failed to invoke " + nativeName, e);
+        }
         throwForCode(result, nativeName);
         var v = hasRow.get(ValueLayout.JAVA_INT, 0);
         return v != 0;
     }
 
-    public static int resultColInt(int prepareId, int colIdx) throws Throwable {
+    public static int resultColInt(int prepareId, int colIdx) throws SQLException {
         final String nativeName = "cdb_result_col_int";
         var linker = Linker.nativeLinker();
         var a = Arena.global();
@@ -172,12 +216,17 @@ public class CdbNative {
                 ValueLayout.ADDRESS);
         var fh = linker.downcallHandle(f, fd);
         var resultCol = a.allocate(ValueLayout.ADDRESS);
-        var result = (int) fh.invokeExact(prepareId, colIdx, resultCol);
+        int result;
+        try {
+            result = (int) fh.invokeExact(prepareId, colIdx, resultCol);
+        } catch (Throwable e) {
+            throw new SQLException("failed to invoke " + nativeName, e);
+        }
         throwForCode(result, nativeName);
         return resultCol.get(ValueLayout.JAVA_INT, 0);
     }
 
-    public static String resultColString(int prepareId, int colIdx) throws Throwable {
+    public static String resultColString(int prepareId, int colIdx) throws SQLException {
         final String nativeName = "cdb_result_col_string";
         var linker = Linker.nativeLinker();
         var a = Arena.global();
@@ -190,7 +239,12 @@ public class CdbNative {
                 ValueLayout.ADDRESS);
         var fh = linker.downcallHandle(f, fd);
         var resultPtr = a.allocate(ValueLayout.ADDRESS);
-        var errCode = (int) fh.invokeExact(prepareId, colIdx, resultPtr);
+        int errCode;
+        try {
+            errCode = (int) fh.invokeExact(prepareId, colIdx, resultPtr);
+        } catch (Throwable e) {
+            throw new SQLException("failed to invoke " + nativeName, e);
+        }
         throwForCode(errCode, nativeName);
         return resultPtr
                 .get(ValueLayout.ADDRESS, 0)
