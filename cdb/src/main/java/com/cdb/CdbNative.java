@@ -7,6 +7,13 @@ import java.sql.SQLException;
 @SuppressWarnings("preview")
 public class CdbNative {
 
+    private static Arena _globalArena = Arena.global();
+    private static SymbolLookup _lib;
+
+    static {
+        _lib = SymbolLookup.libraryLookup(GetCdbLib(), _globalArena);
+    }
+
     private static Path GetCdbLib() {
         var p = CdbNative.class.getResource("/com/cdb/cdb.so").getPath();
         return Path.of(p);
@@ -22,8 +29,7 @@ public class CdbNative {
         final String nativeName = "cdb_new_db";
         var linker = Linker.nativeLinker();
         var a = Arena.global();
-        var lib = SymbolLookup.libraryLookup(GetCdbLib(), a);
-        var f = lib.find(nativeName).orElseThrow();
+        var f = _lib.find(nativeName).orElseThrow();
         var fd = FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.ADDRESS);
         var fh = linker.downcallHandle(f, fd);
         MemorySegment nativeString = a.allocateUtf8String(filename);
@@ -40,8 +46,7 @@ public class CdbNative {
         final String nativeName = "cdb_close_db";
         var linker = Linker.nativeLinker();
         var a = Arena.global();
-        var lib = SymbolLookup.libraryLookup(GetCdbLib(), a);
-        var f = lib.find(nativeName).orElseThrow();
+        var f = _lib.find(nativeName).orElseThrow();
         var fd = FunctionDescriptor.ofVoid(ValueLayout.ADDRESS);
         var fh = linker.downcallHandle(f, fd);
         MemorySegment nativeString = a.allocateUtf8String(filename);
@@ -56,8 +61,7 @@ public class CdbNative {
         final String nativeName = "cdb_prepare";
         var linker = Linker.nativeLinker();
         var a = Arena.global();
-        var lib = SymbolLookup.libraryLookup(GetCdbLib(), a);
-        var f = lib.find(nativeName).orElseThrow();
+        var f = _lib.find(nativeName).orElseThrow();
         var fd = FunctionDescriptor.of(
                 ValueLayout.JAVA_INT,
                 ValueLayout.ADDRESS,
@@ -80,9 +84,7 @@ public class CdbNative {
     public static void closeStatement(int prepareId) throws SQLException {
         final String nativeName = "cdb_close_statement";
         var linker = Linker.nativeLinker();
-        var a = Arena.global();
-        var lib = SymbolLookup.libraryLookup(GetCdbLib(), a);
-        var f = lib.find(nativeName).orElseThrow();
+        var f = _lib.find(nativeName).orElseThrow();
         var fd = FunctionDescriptor.ofVoid(ValueLayout.JAVA_INT);
         var fh = linker.downcallHandle(f, fd);
         try {
@@ -95,9 +97,7 @@ public class CdbNative {
     public static void bindInt(int prepareId, int bound) throws SQLException {
         final String nativeName = "cdb_bind_int";
         var linker = Linker.nativeLinker();
-        var a = Arena.global();
-        var lib = SymbolLookup.libraryLookup(GetCdbLib(), a);
-        var f = lib.find(nativeName).orElseThrow();
+        var f = _lib.find(nativeName).orElseThrow();
         var fd = FunctionDescriptor.of(
                 ValueLayout.JAVA_INT,
                 ValueLayout.JAVA_INT,
@@ -116,8 +116,7 @@ public class CdbNative {
         final String nativeName = "cdb_bind_string";
         var linker = Linker.nativeLinker();
         var a = Arena.global();
-        var lib = SymbolLookup.libraryLookup(GetCdbLib(), a);
-        var f = lib.find(nativeName).orElseThrow();
+        var f = _lib.find(nativeName).orElseThrow();
         var fd = FunctionDescriptor.of(
                 ValueLayout.JAVA_INT,
                 ValueLayout.JAVA_INT,
@@ -136,9 +135,7 @@ public class CdbNative {
     public static void execute(int prepareId) throws SQLException {
         final String nativeName = "cdb_execute";
         var linker = Linker.nativeLinker();
-        var a = Arena.global();
-        var lib = SymbolLookup.libraryLookup(GetCdbLib(), a);
-        var f = lib.find(nativeName).orElseThrow();
+        var f = _lib.find(nativeName).orElseThrow();
         var fd = FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.JAVA_INT);
         var fh = linker.downcallHandle(f, fd);
         int result;
@@ -154,8 +151,7 @@ public class CdbNative {
         final String nativeName = "cdb_result_err";
         var linker = Linker.nativeLinker();
         var a = Arena.global();
-        var lib = SymbolLookup.libraryLookup(GetCdbLib(), a);
-        var f = lib.find(nativeName).orElseThrow();
+        var f = _lib.find(nativeName).orElseThrow();
         var fd = FunctionDescriptor.of(
                 ValueLayout.JAVA_INT,
                 ValueLayout.JAVA_INT,
@@ -185,8 +181,7 @@ public class CdbNative {
         final String nativeName = "cdb_result_row";
         var linker = Linker.nativeLinker();
         var a = Arena.global();
-        var lib = SymbolLookup.libraryLookup(GetCdbLib(), a);
-        var f = lib.find(nativeName).orElseThrow();
+        var f = _lib.find(nativeName).orElseThrow();
         var fd = FunctionDescriptor.of(
                 ValueLayout.JAVA_INT,
                 ValueLayout.JAVA_INT,
@@ -208,8 +203,7 @@ public class CdbNative {
         final String nativeName = "cdb_result_col_int";
         var linker = Linker.nativeLinker();
         var a = Arena.global();
-        var lib = SymbolLookup.libraryLookup(GetCdbLib(), a);
-        var f = lib.find(nativeName).orElseThrow();
+        var f = _lib.find(nativeName).orElseThrow();
         var fd = FunctionDescriptor.of(
                 ValueLayout.JAVA_INT,
                 ValueLayout.JAVA_INT,
@@ -231,8 +225,7 @@ public class CdbNative {
         final String nativeName = "cdb_result_col_string";
         var linker = Linker.nativeLinker();
         var a = Arena.global();
-        var lib = SymbolLookup.libraryLookup(GetCdbLib(), a);
-        var f = lib.find(nativeName).orElseThrow();
+        var f = _lib.find(nativeName).orElseThrow();
         var fd = FunctionDescriptor.of(
                 ValueLayout.JAVA_INT,
                 ValueLayout.JAVA_INT,
