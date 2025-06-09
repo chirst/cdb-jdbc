@@ -8,7 +8,8 @@ import java.sql.SQLException;
 public class CdbNative {
 
     private static Path GetCdbLib() {
-        return Path.of("/workspaces/cdb-jdbc/cdb/src/main/resources/com/cdb/cdb.so");
+        var p = CdbNative.class.getResource("/com/cdb/cdb.so").getPath();
+        return Path.of(p);
     }
 
     private static void throwForCode(int code, String nativeName) throws SQLException {
