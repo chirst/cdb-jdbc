@@ -1,7 +1,10 @@
 package com.cdb;
 
+import java.io.IOException;
 import java.lang.foreign.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 
 @SuppressWarnings("preview")
@@ -11,16 +14,35 @@ public class CdbNative {
     private static SymbolLookup _lib;
 
     static {
-        _lib = SymbolLookup.libraryLookup(GetCdbLib(), _globalArena);
+        Path p;
+        try {
+            p = GetCdbLib();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new Error("failed to init CdbNative");
+        }
+        _lib = SymbolLookup.libraryLookup(p, _globalArena);
     }
 
-    private static Path GetCdbLib() {
+    private static Path GetCdbLib() throws SQLException {
         var dir = GetOsDir();
         var resourceName = String.format("com/cdb/%s/cdb.so", dir);
         var loader = CdbNative.class.getClassLoader();
-        var r = loader.getResource(resourceName);
-        var p = r.getPath();
-        return Path.of(p);
+        var r = loader.getResourceAsStream(resourceName);
+        Path tempFile;
+        try {
+            tempFile = Files.createTempFile("cdbtemp", ".so");
+        } catch (IOException e) {
+            throw new SQLException("failed to create temp native lib");
+        }
+        try {
+            Files.copy(r, tempFile, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            throw new SQLException("failed to copy native lib into temp");
+        }
+        System.load(tempFile.toString());
+        tempFile.toFile().deleteOnExit();
+        return tempFile;
     }
 
     private static String GetOsDir() {
