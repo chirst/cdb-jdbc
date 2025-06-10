@@ -15,8 +15,17 @@ public class CdbNative {
     }
 
     private static Path GetCdbLib() {
-        var p = CdbNative.class.getResource("/com/cdb/cdb.so").getPath();
+        var dir = GetOsDir();
+        var resourceName = String.format("/com/cdb/%s/cdb.so", dir);
+        var p = CdbNative.class.getResource(resourceName).getPath();
         return Path.of(p);
+    }
+
+    private static String GetOsDir() {
+        var osName = System.getProperty("os.name").toLowerCase();
+        if (osName.contains("mac")) return "mac";
+        if (osName.contains("linux")) return "linux";
+        throw new Error("no lib for platform " + osName);
     }
 
     private static void throwForCode(int code, String nativeName) throws SQLException {

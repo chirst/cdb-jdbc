@@ -2,6 +2,7 @@ package com.cdb;
 
 import java.sql.Connection;
 import java.sql.Driver;
+import java.sql.DriverManager;
 import java.sql.DriverPropertyInfo;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
@@ -9,6 +10,18 @@ import java.util.Properties;
 import java.util.logging.Logger;
 
 public class Cdb implements Driver {
+    static final Logger _logger = Logger.getLogger(Cdb.class.getName());
+
+    static void Register() {};
+
+    static {
+        var d = new Cdb();
+        try {
+            DriverManager.registerDriver(d);
+        } catch (SQLException e) {
+            _logger.warning("cdb driver failed to register " + e.getStackTrace());
+        }
+    }
 
     @Override
     public Connection connect(String url, Properties info) throws SQLException {
@@ -44,6 +57,6 @@ public class Cdb implements Driver {
 
     @Override
     public Logger getParentLogger() throws SQLFeatureNotSupportedException {
-        return null;
+        return _logger;
     }
 }

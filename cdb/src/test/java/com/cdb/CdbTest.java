@@ -10,8 +10,7 @@ import org.junit.jupiter.api.Test;
 public class CdbTest {
     @Test
     public void TestCreate() throws SQLException, ClassNotFoundException {
-        var d = new Cdb();
-        DriverManager.registerDriver(d);
+        Cdb.Register();
         var connection = DriverManager.getConnection("jdbc:cdb::memory:");
 
         var createStatement = connection.prepareStatement(
