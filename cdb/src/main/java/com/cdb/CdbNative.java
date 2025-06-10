@@ -16,8 +16,10 @@ public class CdbNative {
 
     private static Path GetCdbLib() {
         var dir = GetOsDir();
-        var resourceName = String.format("/com/cdb/%s/cdb.so", dir);
-        var p = CdbNative.class.getResource(resourceName).getPath();
+        var resourceName = String.format("com/cdb/%s/cdb.so", dir);
+        var loader = CdbNative.class.getClassLoader();
+        var r = loader.getResource(resourceName);
+        var p = r.getPath();
         return Path.of(p);
     }
 
