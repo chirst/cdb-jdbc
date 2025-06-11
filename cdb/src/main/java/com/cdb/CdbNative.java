@@ -49,7 +49,7 @@ public class CdbNative {
         var osName = System.getProperty("os.name").toLowerCase();
         var osArchName = System.getProperty("os.arch").toLowerCase();
         if (osName.contains("mac")) {
-            if (osArchName.contains("arm")) return "mac/arm64";
+            if (osArchName.contains("aarch64")) return "mac/arm64";
             if (osArchName.contains("x86")) return "mac/x86_64";
         }
         if (osName.contains("linux")) {

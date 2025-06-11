@@ -31,7 +31,7 @@ public class CdbConnection implements Connection {
     @Override
     public PreparedStatement prepareStatement(String sql) throws SQLException {
         int prepareId = CdbNative.prepare(_filename, sql);
-        return new CdbPreparedStatement(prepareId);
+        return new CdbPreparedStatement(prepareId, _filename);
     }
 
     @Override
@@ -43,6 +43,33 @@ public class CdbConnection implements Connection {
     @Override
     public boolean isClosed() throws SQLException {
         return !_isOpen;
+    }
+
+    @Override
+    public SQLWarning getWarnings() throws SQLException {
+        return null;
+    }
+
+    @Override
+    public void clearWarnings() throws SQLException {}
+
+    @Override
+    public Statement createStatement() throws SQLException {
+        return new CdbPreparedStatement(_filename);
+    }
+
+    @Override
+    public DatabaseMetaData getMetaData() throws SQLException {
+        return new CdbMetaData();
+    }
+
+    @Override
+    public void setAutoCommit(boolean autoCommit) throws SQLException {
+    }
+
+    @Override
+    public boolean getAutoCommit() throws SQLException {
+        return true;
     }
 
     @Override
@@ -58,12 +85,6 @@ public class CdbConnection implements Connection {
     }
 
     @Override
-    public Statement createStatement() throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createStatement'");
-    }
-
-    @Override
     public CallableStatement prepareCall(String sql) throws SQLException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'prepareCall'");
@@ -76,18 +97,6 @@ public class CdbConnection implements Connection {
     }
 
     @Override
-    public void setAutoCommit(boolean autoCommit) throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setAutoCommit'");
-    }
-
-    @Override
-    public boolean getAutoCommit() throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAutoCommit'");
-    }
-
-    @Override
     public void commit() throws SQLException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'commit'");
@@ -97,12 +106,6 @@ public class CdbConnection implements Connection {
     public void rollback() throws SQLException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'rollback'");
-    }
-
-    @Override
-    public DatabaseMetaData getMetaData() throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getMetaData'");
     }
 
     @Override
@@ -142,21 +145,9 @@ public class CdbConnection implements Connection {
     }
 
     @Override
-    public SQLWarning getWarnings() throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getWarnings'");
-    }
-
-    @Override
-    public void clearWarnings() throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'clearWarnings'");
-    }
-
-    @Override
     public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createStatement'");
+        throw new UnsupportedOperationException("Unimplemented method 'createStatement' resultSetType resultSetConcurrency");
     }
 
     @Override
@@ -224,7 +215,7 @@ public class CdbConnection implements Connection {
     public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability)
             throws SQLException {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createStatement'");
+        throw new UnsupportedOperationException("Unimplemented method 'createStatement' 3 params");
     }
 
     @Override

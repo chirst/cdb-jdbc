@@ -21,8 +21,10 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class CdbResultSet implements ResultSet {
+    static final Logger _logger = Logger.getLogger(CdbResultSet.class.getName());
     int _prepareId;
 
     public CdbResultSet(int prepareId) {
@@ -31,6 +33,7 @@ public class CdbResultSet implements ResultSet {
 
     @Override
     public boolean next() throws SQLException {
+        _logger.info("accessing next in result set " + _prepareId);
         var e = CdbNative.resultErr(_prepareId);
         if (e != "") throw new SQLException("got err " + e);
         return CdbNative.resultRow(_prepareId);
@@ -38,12 +41,41 @@ public class CdbResultSet implements ResultSet {
 
     @Override
     public int getInt(int columnIndex) throws SQLException {
+        _logger.info("accessing getInt");
         return CdbNative.resultColInt(_prepareId, columnIndex);
     }
 
     @Override
     public String getString(int columnIndex) throws SQLException {
+        _logger.info("accessing getString");
         return CdbNative.resultColString(_prepareId, columnIndex);
+    }
+
+    @Override
+    public SQLWarning getWarnings() throws SQLException {
+        return null;
+    }
+
+    @Override
+    public void clearWarnings() throws SQLException {}
+
+    @Override
+    public void setFetchSize(int rows) throws SQLException {
+    }
+
+    @Override
+    public ResultSetMetaData getMetaData() throws SQLException {
+        return new CdbResultSetMetaData();
+    }
+
+    @Override
+    public int getType() throws SQLException {
+        return ResultSet.TYPE_FORWARD_ONLY;
+    }
+
+    @Override
+    public Object getObject(int columnIndex) throws SQLException {
+        return 12;
     }
 
     @Override
@@ -251,33 +283,9 @@ public class CdbResultSet implements ResultSet {
     }
 
     @Override
-    public SQLWarning getWarnings() throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getWarnings'");
-    }
-
-    @Override
-    public void clearWarnings() throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'clearWarnings'");
-    }
-
-    @Override
     public String getCursorName() throws SQLException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getCursorName'");
-    }
-
-    @Override
-    public ResultSetMetaData getMetaData() throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getMetaData'");
-    }
-
-    @Override
-    public Object getObject(int columnIndex) throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getObject'");
     }
 
     @Override
@@ -401,21 +409,9 @@ public class CdbResultSet implements ResultSet {
     }
 
     @Override
-    public void setFetchSize(int rows) throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setFetchSize'");
-    }
-
-    @Override
     public int getFetchSize() throws SQLException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getFetchSize'");
-    }
-
-    @Override
-    public int getType() throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getType'");
     }
 
     @Override

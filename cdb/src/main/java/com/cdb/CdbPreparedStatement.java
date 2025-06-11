@@ -22,12 +22,20 @@ import java.sql.SQLXML;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.logging.Logger;
 
 public class CdbPreparedStatement implements PreparedStatement {
+    static final Logger _logger = Logger.getLogger(CdbPreparedStatement.class.getName());
     private int _prepareId;
+    private String _filename;
 
-    public CdbPreparedStatement(int prepareId) {
+    public CdbPreparedStatement(String filename) {
+        _filename = filename;
+    }
+
+    public CdbPreparedStatement(int prepareId, String filename) {
         _prepareId = prepareId;
+        _filename = filename;
     }
 
     @Override
@@ -48,9 +56,56 @@ public class CdbPreparedStatement implements PreparedStatement {
     }
 
     @Override
+    public SQLWarning getWarnings() throws SQLException {
+        return null;
+    }
+
+    @Override
+    public void clearWarnings() throws SQLException {}
+
+    @Override
+    public boolean execute(String sql) throws SQLException {
+        _prepareId = CdbNative.prepare(_filename, sql);
+        CdbNative.execute(_prepareId);
+        return true;
+    }
+
+    @Override
+    public void setMaxRows(int max) throws SQLException {
+    }
+
+    @Override
+    public void setFetchSize(int rows) throws SQLException {
+    }
+
+    @Override
     public ResultSet executeQuery(String sql) throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'executeQuery'");
+        _logger.info("entering executeQuery");
+        _prepareId = CdbNative.prepare(_filename, sql);
+        _logger.info("prepared query in executeQuery got prepareId " + _prepareId);
+        CdbNative.execute(_prepareId);
+        _logger.info("prepared query in executeQuery executing prepareId " + _prepareId);
+        return new CdbResultSet(_prepareId);
+    }
+
+    @Override
+    public boolean getMoreResults() throws SQLException {
+        return true;
+    }
+
+    @Override
+    public boolean getMoreResults(int current) throws SQLException {
+        return true;
+    }
+
+    @Override
+    public int getUpdateCount() throws SQLException {
+        return -1;
+    }
+
+    @Override
+    public ResultSet getResultSet() throws SQLException {
+        throw new UnsupportedOperationException("Unimplemented method 'getResultSet'");
     }
 
     @Override
@@ -78,12 +133,6 @@ public class CdbPreparedStatement implements PreparedStatement {
     }
 
     @Override
-    public void setMaxRows(int max) throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setMaxRows'");
-    }
-
-    @Override
     public void setEscapeProcessing(boolean enable) throws SQLException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'setEscapeProcessing'");
@@ -108,45 +157,9 @@ public class CdbPreparedStatement implements PreparedStatement {
     }
 
     @Override
-    public SQLWarning getWarnings() throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getWarnings'");
-    }
-
-    @Override
-    public void clearWarnings() throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'clearWarnings'");
-    }
-
-    @Override
     public void setCursorName(String name) throws SQLException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'setCursorName'");
-    }
-
-    @Override
-    public boolean execute(String sql) throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'execute'");
-    }
-
-    @Override
-    public ResultSet getResultSet() throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getResultSet'");
-    }
-
-    @Override
-    public int getUpdateCount() throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getUpdateCount'");
-    }
-
-    @Override
-    public boolean getMoreResults() throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getMoreResults'");
     }
 
     @Override
@@ -159,12 +172,6 @@ public class CdbPreparedStatement implements PreparedStatement {
     public int getFetchDirection() throws SQLException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getFetchDirection'");
-    }
-
-    @Override
-    public void setFetchSize(int rows) throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setFetchSize'");
     }
 
     @Override
@@ -210,12 +217,6 @@ public class CdbPreparedStatement implements PreparedStatement {
     }
 
     @Override
-    public boolean getMoreResults(int current) throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getMoreResults'");
-    }
-
-    @Override
     public ResultSet getGeneratedKeys() throws SQLException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getGeneratedKeys'");
@@ -242,19 +243,19 @@ public class CdbPreparedStatement implements PreparedStatement {
     @Override
     public boolean execute(String sql, int autoGeneratedKeys) throws SQLException {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'execute'");
+        throw new UnsupportedOperationException("Unimplemented method 'execute' 1");
     }
 
     @Override
     public boolean execute(String sql, int[] columnIndexes) throws SQLException {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'execute'");
+        throw new UnsupportedOperationException("Unimplemented method 'execute' 2");
     }
 
     @Override
     public boolean execute(String sql, String[] columnNames) throws SQLException {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'execute'");
+        throw new UnsupportedOperationException("Unimplemented method 'execute' 3");
     }
 
     @Override
@@ -470,7 +471,7 @@ public class CdbPreparedStatement implements PreparedStatement {
     @Override
     public ResultSetMetaData getMetaData() throws SQLException {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getMetaData'");
+        throw new UnsupportedOperationException("Unimplemented method 'getMetaData' prepared result set");
     }
 
     @Override
