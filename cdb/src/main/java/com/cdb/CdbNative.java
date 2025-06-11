@@ -47,9 +47,16 @@ public class CdbNative {
 
     private static String GetOsDir() {
         var osName = System.getProperty("os.name").toLowerCase();
-        if (osName.contains("mac")) return "mac";
-        if (osName.contains("linux")) return "linux";
-        throw new Error("no lib for platform " + osName);
+        var osArchName = System.getProperty("os.arch").toLowerCase();
+        if (osName.contains("mac")) {
+            if (osArchName.contains("arm")) return "mac/arm64";
+            if (osArchName.contains("x86")) return "mac/x86_64";
+        }
+        if (osName.contains("linux")) {
+            if (osArchName.contains("aarch64")) return "linux/aarch64";
+            if (osArchName.contains("amd64")) return "linux/amd64";
+        }
+        throw new Error("no lib for platform " + osName + "/" + osArchName);
     }
 
     private static void throwForCode(int code, String nativeName) throws SQLException {
