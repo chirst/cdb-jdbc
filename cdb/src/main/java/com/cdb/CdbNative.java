@@ -9,7 +9,6 @@ import java.sql.SQLException;
 
 @SuppressWarnings("preview")
 public class CdbNative {
-
     private static Arena _globalArena = Arena.global();
     private static SymbolLookup _lib;
 

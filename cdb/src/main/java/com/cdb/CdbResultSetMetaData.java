@@ -18,7 +18,7 @@ public class CdbResultSetMetaData implements ResultSetMetaData {
 
     @Override
     public String getColumnTypeName(int column) throws SQLException {
-        return "foo";
+        return "UNKNOWN";
     }
 
     @Override

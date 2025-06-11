@@ -22,10 +22,8 @@ import java.sql.SQLXML;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
-import java.util.logging.Logger;
 
 public class CdbPreparedStatement implements PreparedStatement {
-    static final Logger _logger = Logger.getLogger(CdbPreparedStatement.class.getName());
     private int _prepareId;
     private String _filename;
 
@@ -80,11 +78,8 @@ public class CdbPreparedStatement implements PreparedStatement {
 
     @Override
     public ResultSet executeQuery(String sql) throws SQLException {
-        _logger.info("entering executeQuery");
         _prepareId = CdbNative.prepare(_filename, sql);
-        _logger.info("prepared query in executeQuery got prepareId " + _prepareId);
         CdbNative.execute(_prepareId);
-        _logger.info("prepared query in executeQuery executing prepareId " + _prepareId);
         return new CdbResultSet(_prepareId);
     }
 
