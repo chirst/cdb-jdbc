@@ -1,16 +1,17 @@
-# cdb-jdbc
+# ☕ cdb-jdbc
 
-A JDBC database driver for the database [CDB](https://github.com/chirst/cdb). I
-don't know anything about Java so don't bother reading this code. I just wanted
-to see if I could make this database work with DataGrip.
+A [JDBC](https://en.wikipedia.org/wiki/Java_Database_Connectivity) database 
+driver for [github.com/chirst/cdb](https://github.com/chirst/cdb)
 
 ## Running in DataGrip
 
-- Download the `.jar` file for this repository.
-- Create a user driver in DataGrip. Provide the `.jar` file and select the 
-  driver class `com.cdb.Cdb`.
-- Under the "Advanced" tab provide `--enable-preview` for the VM options.
-- Once the driver is created, create a datasource with the driver. Select "No 
-  Auth" for the authentication and provide a filename for your database in the 
-  URL field. `:memory:` is a good option if you don't want to create a database 
-  file.
+1. Download the `.jar` file for this repository.
+2. Create a user driver in DataGrip. Provide the `.jar` file and select the
+driver class `com.cdb.Cdb`.
+3. Under the "Advanced" tab provide `--enable-preview` for the VM options. This
+is necessary because this driver uses the [Java foreign function memory API](https://docs.oracle.com/en/java/javase/21/core/foreign-function-and-memory-api.html)
+(a preview feature) to invoke CDB's C interface.
+4. Once the driver is created, create a datasource with the driver. Select "No 
+Auth" for the authentication and provide a filename for your database in the 
+URL field. `:memory:` is a good option if you don't want to create a database 
+file.
