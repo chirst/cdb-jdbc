@@ -24,8 +24,8 @@ public class CdbNative {
     }
 
     private static Path GetCdbLib() throws SQLException {
-        var dir = GetOsDir();
-        var resourceName = String.format("com/cdb/%s/cdb.so", dir);
+        var dir = GetOsFile();
+        var resourceName = String.format("com/cdb/%s", dir);
         var loader = CdbNative.class.getClassLoader();
         var r = loader.getResourceAsStream(resourceName);
         Path tempFile;
@@ -44,20 +44,20 @@ public class CdbNative {
         return tempFile;
     }
 
-    private static String GetOsDir() {
+    private static String GetOsFile() {
         var osName = System.getProperty("os.name").toLowerCase();
         var osArchName = System.getProperty("os.arch").toLowerCase();
         if (osName.contains("mac")) {
             if (osArchName.contains("aarch64"))
-                return "mac/arm64";
+                return "mac-arm64-cdb.so";
             if (osArchName.contains("x86"))
-                return "mac/x86_64";
+                return "mac-amd64-cdb.so";
         }
         if (osName.contains("linux")) {
             if (osArchName.contains("aarch64"))
-                return "linux/aarch64";
+                return "linux-arm64-cdb.so";
             if (osArchName.contains("amd64"))
-                return "linux/amd64";
+                return "linux-amd64-cdb.so";
         }
         throw new Error("no lib for platform " + osName + "/" + osArchName);
     }
