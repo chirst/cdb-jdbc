@@ -25,32 +25,37 @@ import java.util.Calendar;
 
 public class CdbPreparedStatement implements PreparedStatement {
     private int _prepareId;
-    private String _filename;
     private CdbResultSet _resultSet;
     private CdbConnection _connection;
+    private String _sql;
 
-    public CdbPreparedStatement(CdbConnection connection, String filename) {
+    public CdbPreparedStatement(CdbConnection connection) {
         _connection = connection;
-        _filename = filename;
     }
 
-    public CdbPreparedStatement(CdbConnection connection, int prepareId, String filename) {
+    public CdbPreparedStatement(CdbConnection connection, String sql) throws SQLException {
         _connection = connection;
+        int prepareId = CdbNative.prepare(_connection.filename, sql);
         _prepareId = prepareId;
-        _filename = filename;
+        _sql = sql;
+    }
+
+    private boolean hasResult() throws SQLException {
+        if (_sql == null) {
+            throw new SQLException("sql cannot be null for hasResult");
+        }
+        return _sql.trim().toLowerCase().startsWith("select");
     }
 
     @Override
     public boolean execute() throws SQLException {
         CdbNative.execute(_prepareId);
-        return false;
+        _resultSet = new CdbResultSet(_prepareId);
+        return hasResult();
     }
 
     @Override
     public ResultSet executeQuery() throws SQLException {
-        if (_resultSet != null) {
-            throw new SQLException("unexpected result set at executeQuery");
-        }
         CdbNative.execute(_prepareId);
         _resultSet = new CdbResultSet(_prepareId);
         return _resultSet;
@@ -71,25 +76,23 @@ public class CdbPreparedStatement implements PreparedStatement {
 
     @Override
     public boolean execute(String sql) throws SQLException {
-        _prepareId = CdbNative.prepare(_filename, sql);
+        _sql = sql;
+        _prepareId = CdbNative.prepare(_connection.filename, sql);
         CdbNative.execute(_prepareId);
-        return true;
+        _resultSet = new CdbResultSet(_prepareId);
+        return hasResult();
     }
 
     @Override
-    public void setMaxRows(int max) throws SQLException {
-    }
+    public void setMaxRows(int max) throws SQLException {}
 
     @Override
-    public void setFetchSize(int rows) throws SQLException {
-    }
+    public void setFetchSize(int rows) throws SQLException {}
 
     @Override
     public ResultSet executeQuery(String sql) throws SQLException {
-        if (_resultSet != null) {
-            throw new SQLException("unexpected result set at executeQuery");
-        }
-        _prepareId = CdbNative.prepare(_filename, sql);
+        _sql = sql;
+        _prepareId = CdbNative.prepare(_connection.filename, sql);
         CdbNative.execute(_prepareId);
         _resultSet = new CdbResultSet(_prepareId);
         return _resultSet;
@@ -101,7 +104,7 @@ public class CdbPreparedStatement implements PreparedStatement {
     }
 
     @Override
-    public boolean getMoreResults(int current) throws SQLException {
+    public boolean getMoreResults(int current) {
         return false;
     }
 
@@ -112,7 +115,20 @@ public class CdbPreparedStatement implements PreparedStatement {
 
     @Override
     public ResultSet getResultSet() throws SQLException {
-        return _resultSet;
+        if (hasResult()) {
+            return _resultSet;
+        }
+        return null;
+    }
+
+    @Override
+    public void setInt(int parameterIndex, int x) throws SQLException {
+        CdbNative.bindInt(_prepareId, x);
+    }
+
+    @Override
+    public void setString(int parameterIndex, String x) throws SQLException {
+        CdbNative.bindString(_prepareId, x);
     }
 
     @Override
@@ -344,12 +360,6 @@ public class CdbPreparedStatement implements PreparedStatement {
     }
 
     @Override
-    public void setInt(int parameterIndex, int x) throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setInt'");
-    }
-
-    @Override
     public void setLong(int parameterIndex, long x) throws SQLException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'setLong'");
@@ -371,12 +381,6 @@ public class CdbPreparedStatement implements PreparedStatement {
     public void setBigDecimal(int parameterIndex, BigDecimal x) throws SQLException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'setBigDecimal'");
-    }
-
-    @Override
-    public void setString(int parameterIndex, String x) throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setString'");
     }
 
     @Override

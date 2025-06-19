@@ -10,7 +10,7 @@ import java.util.Properties;
 import java.util.logging.Logger;
 
 public class Cdb implements Driver {
-    static final Logger _logger = Logger.getLogger(Cdb.class.getName());
+    private static final Logger _logger = Logger.getLogger(Cdb.class.getName());
 
     static void Register() {};
 

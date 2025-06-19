@@ -44,7 +44,8 @@ public class CdbResultSetMetaData implements ResultSetMetaData {
 
     @Override
     public String getCatalogName(int column) throws SQLException {
-        return "";
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getCatalogName'");
     }
 
     @Override
