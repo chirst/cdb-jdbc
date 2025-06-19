@@ -26,33 +26,33 @@ import java.util.Calendar;
 public class CdbPreparedStatement implements PreparedStatement {
     private int _prepareId;
     private String _filename;
+    private boolean _hasResult;
     private CdbResultSet _resultSet;
     private CdbConnection _connection;
+    private String _sql;
 
     public CdbPreparedStatement(CdbConnection connection, String filename) {
         _connection = connection;
         _filename = filename;
     }
 
-    public CdbPreparedStatement(CdbConnection connection, int prepareId, String filename) {
+    public CdbPreparedStatement(CdbConnection connection, int prepareId, String filename, String sql) {
         _connection = connection;
         _prepareId = prepareId;
         _filename = filename;
+        _sql = sql;
     }
 
     @Override
     public boolean execute() throws SQLException {
+        _hasResult = _sql.trim().toLowerCase().startsWith("select");
         CdbNative.execute(_prepareId);
         _resultSet = new CdbResultSet(_prepareId);
-        var colCount = CdbNative.resultColCount(_prepareId);
-        return 0 < colCount;
+        return _hasResult;
     }
 
     @Override
     public ResultSet executeQuery() throws SQLException {
-        if (_resultSet != null) {
-            throw new SQLException("unexpected result set at executeQuery");
-        }
         CdbNative.execute(_prepareId);
         _resultSet = new CdbResultSet(_prepareId);
         return _resultSet;
@@ -73,10 +73,11 @@ public class CdbPreparedStatement implements PreparedStatement {
 
     @Override
     public boolean execute(String sql) throws SQLException {
+        _hasResult = sql.trim().toLowerCase().startsWith("select");
         _prepareId = CdbNative.prepare(_filename, sql);
         CdbNative.execute(_prepareId);
         _resultSet = new CdbResultSet(_prepareId);
-        return CdbNative.resultColCount(_prepareId) != 0;
+        return _hasResult;
     }
 
     @Override
@@ -87,9 +88,6 @@ public class CdbPreparedStatement implements PreparedStatement {
 
     @Override
     public ResultSet executeQuery(String sql) throws SQLException {
-        if (_resultSet != null) {
-            throw new SQLException("unexpected result set at executeQuery");
-        }
         _prepareId = CdbNative.prepare(_filename, sql);
         CdbNative.execute(_prepareId);
         _resultSet = new CdbResultSet(_prepareId);
@@ -102,30 +100,21 @@ public class CdbPreparedStatement implements PreparedStatement {
     }
 
     @Override
-    public boolean getMoreResults(int current) throws SQLException {
+    public boolean getMoreResults(int current) {
         return false;
     }
 
     @Override
     public int getUpdateCount() throws SQLException {
-        if (_resultSet == null) {
-            throw new SQLException("expected resultSet for getUpdateCount");
-        }
-        if (_resultSet.getMetaData().getColumnCount() == 0) {
-            return 0;
-        }
         return -1;
     }
 
     @Override
     public ResultSet getResultSet() throws SQLException {
-        if (_resultSet == null) {
-            throw new SQLException("expected resultSet for getResultSet");
+        if (_hasResult) {
+            return _resultSet;
         }
-        if (_resultSet.getMetaData().getColumnCount() == 0) {
-            return null;
-        }
-        return _resultSet;
+        return null;
     }
 
     @Override

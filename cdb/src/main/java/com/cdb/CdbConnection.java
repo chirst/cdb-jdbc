@@ -31,7 +31,7 @@ public class CdbConnection implements Connection {
     @Override
     public PreparedStatement prepareStatement(String sql) throws SQLException {
         int prepareId = CdbNative.prepare(_filename, sql);
-        return new CdbPreparedStatement(this, prepareId, _filename);
+        return new CdbPreparedStatement(this, prepareId, _filename, sql);
     }
 
     @Override

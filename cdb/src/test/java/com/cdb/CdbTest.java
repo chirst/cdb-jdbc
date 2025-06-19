@@ -82,7 +82,7 @@ public class CdbTest {
         var hasResult = preparedStatement.execute();
         assertFalse(hasResult);
         var updateCount = preparedStatement.getUpdateCount();
-        assertEquals(updateCount, 1);
+        assertEquals(updateCount, -1);
         var resultSet = preparedStatement.getResultSet();
         assertNull(resultSet);
     }
@@ -96,7 +96,7 @@ public class CdbTest {
         var hasResult = preparedStatement.execute();
         assertFalse(hasResult);
         var updateCount = preparedStatement.getUpdateCount();
-        assertEquals(updateCount, 1);
+        assertEquals(updateCount, -1);
         var resultSet = preparedStatement.getResultSet();
         assertNull(resultSet);
     }
@@ -143,5 +143,31 @@ public class CdbTest {
         var preparedStatement = _connection.createStatement();
         var result = preparedStatement.executeQuery("SELECT * FROM foo");
         assertTrue(result.next());
+    }
+
+    @Test
+    public void TestCreate() throws SQLException {
+        var preparedStatement = _connection.createStatement();
+        var hasResult = preparedStatement.execute(
+            "CREATE TABLE foo (id INTEGER PRIMARY KEY, name TEXT);"
+        );
+        assertFalse(hasResult);
+        var hasMoreResults = preparedStatement.getMoreResults();
+        assertFalse(hasMoreResults);
+        var updateCount = preparedStatement.getUpdateCount();
+        assertEquals(updateCount, -1);
+    }
+
+    @Test
+    public void TestInsert() throws SQLException {
+        var preparedStatement = _connection.createStatement();
+        var hasResult = preparedStatement.execute(
+            "INSERT INTO foo (name) VALUES ('asdf')"
+        );
+        assertFalse(hasResult);
+        var hasMoreResults = preparedStatement.getMoreResults();
+        assertFalse(hasMoreResults);
+        var updateCount = preparedStatement.getUpdateCount();
+        assertEquals(updateCount, -1);
     }
 }
