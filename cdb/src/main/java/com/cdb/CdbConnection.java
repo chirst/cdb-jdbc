@@ -74,11 +74,15 @@ public class CdbConnection implements Connection {
 
     @Override
     public String getCatalog() throws SQLException {
-        return null;
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getCatalog'");
     }
 
     @Override
-    public void setCatalog(String catalog) throws SQLException {}
+    public void setCatalog(String catalog) throws SQLException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setCatalog'");
+    }
 
     @Override
     public <T> T unwrap(Class<T> iface) throws SQLException {

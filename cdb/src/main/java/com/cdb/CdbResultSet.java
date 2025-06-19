@@ -69,7 +69,10 @@ public class CdbResultSet implements ResultSet {
 
     @Override
     public Object getObject(int columnIndex) throws SQLException {
-        return CdbNative.resultColInt(_prepareId, columnIndex - 1);
+        var t = CdbNative.resultColType(_prepareId, columnIndex - 1);
+        if (t == 1) return CdbNative.resultColInt(_prepareId, columnIndex - 1);
+        if (t == 3) return CdbNative.resultColString(_prepareId, columnIndex - 1);
+        throw new SQLException("getObject unexpected type id " + t);
     }
 
     @Override

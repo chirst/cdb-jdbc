@@ -94,58 +94,20 @@ public class CdbMetaData implements DatabaseMetaData {
     }
 
     @Override
-    public ResultSet getAttributes(String catalog, String schemaPattern, String typeNamePattern,
-            String attributeNamePattern) throws SQLException {
-        return _connection.prepareStatement("SELECT 1 WHERE 1 = 0;").executeQuery();
-    }
-
-    @Override
-    public ResultSet getBestRowIdentifier(String catalog, String schema, String table, int scope, boolean nullable)
-            throws SQLException {
-        return _connection.prepareStatement("SELECT 1 WHERE 1 = 0;").executeQuery();
-    }
-
-    @Override
     public String getCatalogSeparator() throws SQLException {
-        return "";
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getCatalogSeparator'");
     }
 
     @Override
     public String getCatalogTerm() throws SQLException {
-        return "catalog";
-    }
-
-    @Override
-    public ResultSet getCatalogs() throws SQLException {
-        return _connection.prepareStatement("SELECT 1 WHERE 1 = 0;").executeQuery();
-    }
-
-    @Override
-    public ResultSet getClientInfoProperties() throws SQLException {
-        return _connection.prepareStatement("SELECT 1 WHERE 1 = 0;").executeQuery();
-    }
-
-    @Override
-    public ResultSet getColumnPrivileges(String catalog, String schema, String table, String columnNamePattern)
-            throws SQLException {
-        return _connection.prepareStatement("SELECT 1 WHERE 1 = 0;").executeQuery();
-    }
-
-    @Override
-    public ResultSet getColumns(String catalog, String schemaPattern, String tableNamePattern, String columnNamePattern)
-            throws SQLException {
-        return _connection.prepareStatement("SELECT 1 WHERE 1 = 0;").executeQuery();
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getCatalogTerm'");
     }
 
     @Override
     public Connection getConnection() throws SQLException {
         return _connection;
-    }
-
-    @Override
-    public ResultSet getCrossReference(String parentCatalog, String parentSchema, String parentTable,
-            String foreignCatalog, String foreignSchema, String foreignTable) throws SQLException {
-        return _connection.prepareStatement("SELECT 1 WHERE 1 = 0;").executeQuery();
     }
 
     @Override
@@ -179,43 +141,15 @@ public class CdbMetaData implements DatabaseMetaData {
     }
 
     @Override
-    public ResultSet getExportedKeys(String catalog, String schema, String table) throws SQLException {
-        return _connection.prepareStatement("SELECT 1 WHERE 1 = 0;").executeQuery();
-    }
-
-    @Override
     public String getExtraNameCharacters() throws SQLException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getExtraNameCharacters'");
     }
 
     @Override
-    public ResultSet getFunctionColumns(String catalog, String schemaPattern, String functionNamePattern,
-            String columnNamePattern) throws SQLException {
-        return _connection.prepareStatement("SELECT 1 WHERE 1 = 0;").executeQuery();
-    }
-
-    @Override
-    public ResultSet getFunctions(String catalog, String schemaPattern, String functionNamePattern)
-            throws SQLException {
-        return _connection.prepareStatement("SELECT 1 WHERE 1 = 0;").executeQuery();
-    }
-
-    @Override
     public String getIdentifierQuoteString() throws SQLException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getIdentifierQuoteString'");
-    }
-
-    @Override
-    public ResultSet getImportedKeys(String catalog, String schema, String table) throws SQLException {
-        return _connection.prepareStatement("SELECT 1 WHERE 1 = 0;").executeQuery();
-    }
-
-    @Override
-    public ResultSet getIndexInfo(String catalog, String schema, String table, boolean unique, boolean approximate)
-            throws SQLException {
-        return _connection.prepareStatement("SELECT 1 WHERE 1 = 0;").executeQuery();
     }
 
     @Override
@@ -356,32 +290,9 @@ public class CdbMetaData implements DatabaseMetaData {
     }
 
     @Override
-    public ResultSet getPrimaryKeys(String catalog, String schema, String table) throws SQLException {
-        return _connection.prepareStatement("SELECT 1 WHERE 1 = 0;").executeQuery();
-    }
-
-    @Override
-    public ResultSet getProcedureColumns(String catalog, String schemaPattern, String procedureNamePattern,
-            String columnNamePattern) throws SQLException {
-        return _connection.prepareStatement("SELECT 1 WHERE 1 = 0;").executeQuery();
-    }
-
-    @Override
     public String getProcedureTerm() throws SQLException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getProcedureTerm'");
-    }
-
-    @Override
-    public ResultSet getProcedures(String catalog, String schemaPattern, String procedureNamePattern)
-            throws SQLException {
-        return _connection.prepareStatement("SELECT 1 WHERE 1 = 0;").executeQuery();
-    }
-
-    @Override
-    public ResultSet getPseudoColumns(String catalog, String schemaPattern, String tableNamePattern,
-            String columnNamePattern) throws SQLException {
-        return _connection.prepareStatement("SELECT 1 WHERE 1 = 0;").executeQuery();
     }
 
     @Override
@@ -415,16 +326,6 @@ public class CdbMetaData implements DatabaseMetaData {
     }
 
     @Override
-    public ResultSet getSchemas() throws SQLException {
-        return _connection.prepareStatement("SELECT 1 WHERE 1 = 0;").executeQuery();
-    }
-
-    @Override
-    public ResultSet getSchemas(String catalog, String schemaPattern) throws SQLException {
-        return _connection.prepareStatement("SELECT 1 WHERE 1 = 0;").executeQuery();
-    }
-
-    @Override
     public String getSearchStringEscape() throws SQLException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getSearchStringEscape'");
@@ -437,53 +338,15 @@ public class CdbMetaData implements DatabaseMetaData {
     }
 
     @Override
-    public ResultSet getSuperTables(String catalog, String schemaPattern, String tableNamePattern) throws SQLException {
-        return _connection.prepareStatement("SELECT 1 WHERE 1 = 0;").executeQuery();
-    }
-
-    @Override
-    public ResultSet getSuperTypes(String catalog, String schemaPattern, String typeNamePattern) throws SQLException {
-        return _connection.prepareStatement("SELECT 1 WHERE 1 = 0;").executeQuery();
-    }
-
-    @Override
     public String getSystemFunctions() throws SQLException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getSystemFunctions'");
     }
 
     @Override
-    public ResultSet getTablePrivileges(String catalog, String schemaPattern, String tableNamePattern)
-            throws SQLException {
-        return _connection.prepareStatement("SELECT 1 WHERE 1 = 0;").executeQuery();
-    }
-
-    @Override
-    public ResultSet getTableTypes() throws SQLException {
-        return _connection.prepareStatement("SELECT 1 WHERE 1 = 0;").executeQuery();
-    }
-
-    @Override
-    public ResultSet getTables(String catalog, String schemaPattern, String tableNamePattern, String[] types)
-            throws SQLException {
-        return _connection.prepareStatement("SELECT 1 WHERE 1 = 0;").executeQuery();
-    }
-
-    @Override
     public String getTimeDateFunctions() throws SQLException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getTimeDateFunctions'");
-    }
-
-    @Override
-    public ResultSet getTypeInfo() throws SQLException {
-        return _connection.prepareStatement("SELECT 1 WHERE 1 = 0;").executeQuery();
-    }
-
-    @Override
-    public ResultSet getUDTs(String catalog, String schemaPattern, String typeNamePattern, int[] types)
-            throws SQLException {
-        return _connection.prepareStatement("SELECT 1 WHERE 1 = 0;").executeQuery();
     }
 
     @Override
@@ -496,11 +359,6 @@ public class CdbMetaData implements DatabaseMetaData {
     public String getUserName() throws SQLException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getUserName'");
-    }
-
-    @Override
-    public ResultSet getVersionColumns(String catalog, String schema, String table) throws SQLException {
-        return _connection.prepareStatement("SELECT 1 WHERE 1 = 0;").executeQuery();
     }
 
     @Override
@@ -1040,4 +898,174 @@ public class CdbMetaData implements DatabaseMetaData {
     public boolean usesLocalFiles() throws SQLException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'usesLocalFiles'");
+    }
+
+    @Override
+    public ResultSet getAttributes(String catalog, String schemaPattern, String typeNamePattern,
+            String attributeNamePattern) throws SQLException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAttributes'");
+    }
+
+    @Override
+    public ResultSet getBestRowIdentifier(String catalog, String schema, String table, int scope, boolean nullable)
+            throws SQLException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getBestRowIdentifier'");
+    }
+
+    @Override
+    public ResultSet getCatalogs() throws SQLException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getCatalogs'");
+    }
+
+    @Override
+    public ResultSet getClientInfoProperties() throws SQLException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getClientInfoProperties'");
+    }
+
+    @Override
+    public ResultSet getColumnPrivileges(String catalog, String schema, String table, String columnNamePattern)
+            throws SQLException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getColumnPrivileges'");
+    }
+
+    @Override
+    public ResultSet getColumns(String catalog, String schemaPattern, String tableNamePattern, String columnNamePattern)
+            throws SQLException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getColumns'");
+    }
+
+    @Override
+    public ResultSet getCrossReference(String parentCatalog, String parentSchema, String parentTable,
+            String foreignCatalog, String foreignSchema, String foreignTable) throws SQLException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getCrossReference'");
+    }
+
+    @Override
+    public ResultSet getExportedKeys(String catalog, String schema, String table) throws SQLException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getExportedKeys'");
+    }
+
+    @Override
+    public ResultSet getFunctionColumns(String catalog, String schemaPattern, String functionNamePattern,
+            String columnNamePattern) throws SQLException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getFunctionColumns'");
+    }
+
+    @Override
+    public ResultSet getFunctions(String catalog, String schemaPattern, String functionNamePattern)
+            throws SQLException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getFunctions'");
+    }
+
+    @Override
+    public ResultSet getImportedKeys(String catalog, String schema, String table) throws SQLException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getImportedKeys'");
+    }
+
+    @Override
+    public ResultSet getIndexInfo(String catalog, String schema, String table, boolean unique, boolean approximate)
+            throws SQLException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getIndexInfo'");
+    }
+
+    @Override
+    public ResultSet getPrimaryKeys(String catalog, String schema, String table) throws SQLException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getPrimaryKeys'");
+    }
+
+    @Override
+    public ResultSet getProcedureColumns(String catalog, String schemaPattern, String procedureNamePattern,
+            String columnNamePattern) throws SQLException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getProcedureColumns'");
+    }
+
+    @Override
+    public ResultSet getProcedures(String catalog, String schemaPattern, String procedureNamePattern)
+            throws SQLException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getProcedures'");
+    }
+
+    @Override
+    public ResultSet getPseudoColumns(String catalog, String schemaPattern, String tableNamePattern,
+            String columnNamePattern) throws SQLException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getPseudoColumns'");
+    }
+
+    @Override
+    public ResultSet getSchemas() throws SQLException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getSchemas'");
+    }
+
+    @Override
+    public ResultSet getSchemas(String catalog, String schemaPattern) throws SQLException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getSchemas'");
+    }
+
+    @Override
+    public ResultSet getSuperTables(String catalog, String schemaPattern, String tableNamePattern) throws SQLException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getSuperTables'");
+    }
+
+    @Override
+    public ResultSet getSuperTypes(String catalog, String schemaPattern, String typeNamePattern) throws SQLException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getSuperTypes'");
+    }
+
+    @Override
+    public ResultSet getTablePrivileges(String catalog, String schemaPattern, String tableNamePattern)
+            throws SQLException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getTablePrivileges'");
+    }
+
+    @Override
+    public ResultSet getTableTypes() throws SQLException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getTableTypes'");
+    }
+
+    @Override
+    public ResultSet getTables(String catalog, String schemaPattern, String tableNamePattern, String[] types)
+            throws SQLException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getTables'");
+    }
+
+    @Override
+    public ResultSet getTypeInfo() throws SQLException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getTypeInfo'");
+    }
+
+    @Override
+    public ResultSet getUDTs(String catalog, String schemaPattern, String typeNamePattern, int[] types)
+            throws SQLException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getUDTs'");
+    }
+
+    @Override
+    public ResultSet getVersionColumns(String catalog, String schema, String table) throws SQLException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getVersionColumns'");
     }}

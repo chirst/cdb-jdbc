@@ -43,7 +43,9 @@ public class CdbPreparedStatement implements PreparedStatement {
     @Override
     public boolean execute() throws SQLException {
         CdbNative.execute(_prepareId);
-        return false;
+        _resultSet = new CdbResultSet(_prepareId);
+        var colCount = CdbNative.resultColCount(_prepareId);
+        return 0 < colCount;
     }
 
     @Override
@@ -73,16 +75,15 @@ public class CdbPreparedStatement implements PreparedStatement {
     public boolean execute(String sql) throws SQLException {
         _prepareId = CdbNative.prepare(_filename, sql);
         CdbNative.execute(_prepareId);
-        return true;
+        _resultSet = new CdbResultSet(_prepareId);
+        return CdbNative.resultColCount(_prepareId) != 0;
     }
 
     @Override
-    public void setMaxRows(int max) throws SQLException {
-    }
+    public void setMaxRows(int max) throws SQLException {}
 
     @Override
-    public void setFetchSize(int rows) throws SQLException {
-    }
+    public void setFetchSize(int rows) throws SQLException {}
 
     @Override
     public ResultSet executeQuery(String sql) throws SQLException {
@@ -107,12 +108,34 @@ public class CdbPreparedStatement implements PreparedStatement {
 
     @Override
     public int getUpdateCount() throws SQLException {
+        if (_resultSet == null) {
+            throw new SQLException("expected resultSet for getUpdateCount");
+        }
+        if (_resultSet.getMetaData().getColumnCount() == 0) {
+            return 0;
+        }
         return -1;
     }
 
     @Override
     public ResultSet getResultSet() throws SQLException {
+        if (_resultSet == null) {
+            throw new SQLException("expected resultSet for getResultSet");
+        }
+        if (_resultSet.getMetaData().getColumnCount() == 0) {
+            return null;
+        }
         return _resultSet;
+    }
+
+    @Override
+    public void setInt(int parameterIndex, int x) throws SQLException {
+        CdbNative.bindInt(_prepareId, x);
+    }
+
+    @Override
+    public void setString(int parameterIndex, String x) throws SQLException {
+        CdbNative.bindString(_prepareId, x);
     }
 
     @Override
@@ -344,12 +367,6 @@ public class CdbPreparedStatement implements PreparedStatement {
     }
 
     @Override
-    public void setInt(int parameterIndex, int x) throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setInt'");
-    }
-
-    @Override
     public void setLong(int parameterIndex, long x) throws SQLException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'setLong'");
@@ -371,12 +388,6 @@ public class CdbPreparedStatement implements PreparedStatement {
     public void setBigDecimal(int parameterIndex, BigDecimal x) throws SQLException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'setBigDecimal'");
-    }
-
-    @Override
-    public void setString(int parameterIndex, String x) throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setString'");
     }
 
     @Override
