@@ -21,22 +21,21 @@ import java.util.concurrent.Executor;
 
 public class CdbConnection implements Connection {
     private boolean _isOpen = false;
-    private String _filename;
+    public final String filename;
 
     public CdbConnection(String filename) {
         _isOpen = true;
-        _filename = filename;
+        this.filename = filename;
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql) throws SQLException {
-        int prepareId = CdbNative.prepare(_filename, sql);
-        return new CdbPreparedStatement(this, prepareId, _filename, sql);
+        return new CdbPreparedStatement(this, sql);
     }
 
     @Override
     public void close() throws SQLException {
-        CdbNative.closeDb(_filename);
+        CdbNative.closeDb(filename);
         _isOpen = false;
     }
 
@@ -55,7 +54,7 @@ public class CdbConnection implements Connection {
 
     @Override
     public Statement createStatement() throws SQLException {
-        return new CdbPreparedStatement(this, _filename);
+        return new CdbPreparedStatement(this);
     }
 
     @Override

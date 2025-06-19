@@ -25,30 +25,33 @@ import java.util.Calendar;
 
 public class CdbPreparedStatement implements PreparedStatement {
     private int _prepareId;
-    private String _filename;
-    private boolean _hasResult;
     private CdbResultSet _resultSet;
     private CdbConnection _connection;
     private String _sql;
 
-    public CdbPreparedStatement(CdbConnection connection, String filename) {
+    public CdbPreparedStatement(CdbConnection connection) {
         _connection = connection;
-        _filename = filename;
     }
 
-    public CdbPreparedStatement(CdbConnection connection, int prepareId, String filename, String sql) {
+    public CdbPreparedStatement(CdbConnection connection, String sql) throws SQLException {
         _connection = connection;
+        int prepareId = CdbNative.prepare(_connection.filename, sql);
         _prepareId = prepareId;
-        _filename = filename;
         _sql = sql;
+    }
+
+    private boolean hasResult() throws SQLException {
+        if (_sql == null) {
+            throw new SQLException("sql cannot be null for hasResult");
+        }
+        return _sql.trim().toLowerCase().startsWith("select");
     }
 
     @Override
     public boolean execute() throws SQLException {
-        _hasResult = _sql.trim().toLowerCase().startsWith("select");
         CdbNative.execute(_prepareId);
         _resultSet = new CdbResultSet(_prepareId);
-        return _hasResult;
+        return hasResult();
     }
 
     @Override
@@ -73,11 +76,11 @@ public class CdbPreparedStatement implements PreparedStatement {
 
     @Override
     public boolean execute(String sql) throws SQLException {
-        _hasResult = sql.trim().toLowerCase().startsWith("select");
-        _prepareId = CdbNative.prepare(_filename, sql);
+        _sql = sql;
+        _prepareId = CdbNative.prepare(_connection.filename, sql);
         CdbNative.execute(_prepareId);
         _resultSet = new CdbResultSet(_prepareId);
-        return _hasResult;
+        return hasResult();
     }
 
     @Override
@@ -88,7 +91,8 @@ public class CdbPreparedStatement implements PreparedStatement {
 
     @Override
     public ResultSet executeQuery(String sql) throws SQLException {
-        _prepareId = CdbNative.prepare(_filename, sql);
+        _sql = sql;
+        _prepareId = CdbNative.prepare(_connection.filename, sql);
         CdbNative.execute(_prepareId);
         _resultSet = new CdbResultSet(_prepareId);
         return _resultSet;
@@ -111,7 +115,7 @@ public class CdbPreparedStatement implements PreparedStatement {
 
     @Override
     public ResultSet getResultSet() throws SQLException {
-        if (_hasResult) {
+        if (hasResult()) {
             return _resultSet;
         }
         return null;
